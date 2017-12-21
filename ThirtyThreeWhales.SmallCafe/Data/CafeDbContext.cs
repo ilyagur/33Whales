@@ -7,12 +7,18 @@ namespace ThirtyThreeWhales.SmallCafe.Data {
         public CafeDbContext( DbContextOptions<CafeDbContext> options ) : base( options ) {
         }
 
-        public DbSet<Ingredients> Ingredients { get; set; }
-        public DbSet<IngredientPictures> IngredientPictures { get; set; }
+        public DbSet<Ingredient> Ingredients { get; set; }
+        public DbSet<IngredientPicture> IngredientPictures { get; set; }
+        public DbSet<Recipe> Recipes { get; set; }
+        public DbSet<RecipePicture> RecipePictures { get; set; }
 
         protected override void OnModelCreating( ModelBuilder modelBuilder ) {
-            modelBuilder.Entity<Ingredients>().ToTable( "Ingredients" );
-            //modelBuilder.Entity<IngredientPictures>().ToTable( "IngredientPictures" );
+            modelBuilder.Entity<Ingredient>().ToTable( "Ingredients" );
+            modelBuilder.Entity<IngredientPicture>().ToTable( "IngredientPictures" );
+
+            modelBuilder.Entity<Recipe>().ToTable( "Recipes" );
+            modelBuilder.Entity<RecipePicture>().ToTable( "RecipePictures" );
+
         }
     }
 }

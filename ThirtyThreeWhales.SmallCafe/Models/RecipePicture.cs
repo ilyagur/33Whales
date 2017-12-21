@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace ThirtyThreeWhales.SmallCafe.Models
 {
-    public class IngredientPictures
+    public class RecipePicture
     {
-        public int IngrPicId { get; set; }
-
         [Key]
-        public int IngrId { get; set; }
-        public byte[] Picture { get; set; }
+        public int RcpPicId { get; set; }
+        public int RcpId { get; set; }
+        public byte[ ] Picture { get; set; }
     }
 }
