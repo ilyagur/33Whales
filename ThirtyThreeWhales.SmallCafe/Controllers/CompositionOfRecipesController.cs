@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,11 @@ namespace ThirtyThreeWhales.SmallCafe.Controllers {
     public class CompositionOfRecipesController : Controller
     {
         private IDependentEntityDbService<CompositionOfRecipes> _dbService;
+        private ILogger<CompositionOfRecipesController> _logger;
 
-        public CompositionOfRecipesController(IDependentEntityDbService<CompositionOfRecipes> dbService) {
+        public CompositionOfRecipesController(IDependentEntityDbService<CompositionOfRecipes> dbService, ILogger<CompositionOfRecipesController> logger ) {
             _dbService = dbService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -34,12 +37,10 @@ namespace ThirtyThreeWhales.SmallCafe.Controllers {
             try {
                 compositionOfRecipes = _dbService.GetAllElementsByParentElementId( recipeID );
             } catch ( Exception e ) {
-                //TODO: logger
-                errors.Add( $"Exception: {e.Message}" );
+                string error = $"Exception: {e.Message}" + ( e.InnerException != null  ? $" Inner Exception: {e.InnerException.Message}" : "");
+                _logger.LogWarning( error );
 
-                if ( e.InnerException != null ) {
-                    errors.Add( $"Inner Exception: {e.InnerException.Message}" );
-                }
+                errors.Add( error );
             }
 
             if ( errors.Count > 0 ) {
@@ -84,12 +85,10 @@ namespace ThirtyThreeWhales.SmallCafe.Controllers {
             try {
                 cor = _dbService.CreateNewDependantElement(new CompositionOfRecipes() { RecipeID = recipeID, IngredientID = ingredientID, Quantity = compositionOfRecipes.Quantity } );
             } catch ( Exception e ) {
-                //TODO: logger
-                errors.Add( $"Exception: {e.Message}" );
+                string error = $"Exception: {e.Message}" + ( e.InnerException != null ? $" Inner Exception: {e.InnerException.Message}" : "" );
+                _logger.LogWarning( error );
 
-                if ( e.InnerException != null ) {
-                    errors.Add( $"Inner Exception: {e.InnerException.Message}" );
-                }
+                errors.Add( error );
             }
 
             if ( errors.Count > 0 ) {
@@ -125,12 +124,10 @@ namespace ThirtyThreeWhales.SmallCafe.Controllers {
             try {
                 cor = _dbService.UpdateExistingDependantElement( new CompositionOfRecipes() { RecipeID = recipeID, IngredientID = ingredientID, Quantity = compositionOfRecipes.Quantity } );
             } catch ( Exception e ) {
-                //TODO: logger
-                errors.Add( $"Exception: {e.Message}" );
+                string error = $"Exception: {e.Message}" + ( e.InnerException != null ? $" Inner Exception: {e.InnerException.Message}" : "" );
+                _logger.LogWarning( error );
 
-                if ( e.InnerException != null ) {
-                    errors.Add( $"Inner Exception: {e.InnerException.Message}" );
-                }
+                errors.Add( error );
             }
 
             if ( errors.Count > 0 ) {
@@ -160,8 +157,10 @@ namespace ThirtyThreeWhales.SmallCafe.Controllers {
             try {
                 _dbService.DeleteDependantElement( new CompositionOfRecipes() { RecipeID = recipeID, IngredientID = ingredientID } );
             } catch ( Exception e ) {
-                //TODO: logger
-                return StatusCode( 500, $"Exception: {e.Message}" );
+                string error = $"Exception: {e.Message}" + ( e.InnerException != null ? $" Inner Exception: {e.InnerException.Message}" : "" );
+                _logger.LogWarning( error );
+
+                return StatusCode( 500, error );
             }
             return Ok();
         }

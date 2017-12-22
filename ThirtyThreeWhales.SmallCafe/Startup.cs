@@ -28,6 +28,7 @@ namespace ThirtyThreeWhales.SmallCafe
             services.AddDbContext<CafeDbContext>( options =>
                 options.UseSqlServer( Configuration.GetConnectionString( "DefaultConnection" ) ) );
 
+            services.AddLogging();
             services.AddDependencies();
             services.AddMvc();
         }
