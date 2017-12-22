@@ -5,9 +5,8 @@ namespace ThirtyThreeWhales.SmallCafe.Models {
     public class Ingredient
     {
         [Key]
-        public int IngrId { get; set; }
+        public int IngredientID { get; set; }
         public string Name { get; set; }
-        
-        public ICollection<IngredientPicture> Pictures { get; set; }
+        public virtual ICollection<IngredientPicture> Pictures { get; set; }
     }
 }

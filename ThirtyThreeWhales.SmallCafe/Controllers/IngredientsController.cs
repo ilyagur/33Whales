@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using ThirtyThreeWhales.SmallCafe.Models;
 using ThirtyThreeWhales.SmallCafe.Services.Interfaces;
 
@@ -7,9 +8,9 @@ namespace ThirtyThreeWhales.SmallCafe.Controllers {
     [Route("api")]
     public class IngredientsController : Controller
     {
-        private IDbService<Ingredient> _dbService;
+        private IIndependentEntityDbService<Ingredient> _dbService;
 
-        public IngredientsController( IDbService<Ingredient> dbService ) {
+        public IngredientsController( IIndependentEntityDbService<Ingredient> dbService ) {
             _dbService = dbService;
         }
 
@@ -39,8 +40,14 @@ namespace ThirtyThreeWhales.SmallCafe.Controllers {
 
         [HttpDelete]
         [Route( "Ingredients/{id}" )]
-        public JsonResult DeleteIngredient( int id ) {
-            return Json( _dbService.DeleteElement( id ) );
+        public IActionResult DeleteIngredient( int id ) {
+            try {
+                _dbService.DeleteElement( new Ingredient() { IngredientID = id } );
+            } catch ( Exception e ) {
+                //TODO: logger
+                return StatusCode( 500, $"Exception: {e.Message}" );
+            }
+            return Ok();
         }
     }
 }

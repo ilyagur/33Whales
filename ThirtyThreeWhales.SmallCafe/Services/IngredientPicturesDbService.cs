@@ -8,7 +8,7 @@ using ThirtyThreeWhales.SmallCafe.Services.Interfaces;
 
 namespace ThirtyThreeWhales.SmallCafe.Services
 {
-    public class IngredientPicturesDbService : IDbService<IngredientPicture> {
+    public class IngredientPicturesDbService : IDependentEntityDbService<IngredientPicture> {
 
         private CafeDbContext _dbContext;
 
@@ -16,26 +16,39 @@ namespace ThirtyThreeWhales.SmallCafe.Services
             _dbContext = dbContext;
         }
 
-        public IngredientPicture CreateNewElement( IngredientPicture element ) {
-            _dbContext.Add(element);
+        public IList<IngredientPicture> GetSpecificElementsByParentElementId( int parentId, int elementId ) {
+            throw new System.NotImplementedException();
+        }
+        public IngredientPicture CreateNewDependantElement( IngredientPicture element ) {
+            _dbContext.Add( element );
             _dbContext.SaveChanges();
             return element;
         }
 
-        public bool DeleteElement( int id ) {
-            throw new NotImplementedException();
+        public IList<IngredientPicture> GetAllElementsByParentElementId( int id ) {
+            Ingredient ingredient = _dbContext.Ingredients
+                .Where( i => i.IngredientID == id )
+                .Select( a => new Ingredient() {
+                    Pictures = a.Pictures
+                } ).FirstOrDefault();
+
+            if ( ingredient == null || ingredient.Pictures == null ) {
+                return null;
+            }
+
+            return ingredient.Pictures.ToList();
         }
 
-        public IList<IngredientPicture> GetAll() {
-            throw new NotImplementedException();
+        public IngredientPicture UpdateExistingDependantElement( IngredientPicture element ) {
+            _dbContext.Update( element );
+            _dbContext.SaveChanges();
+
+            return element;
         }
 
-        public IngredientPicture GetElementById( int id ) {
-            throw new NotImplementedException();
-        }
-
-        public IngredientPicture UpdateElement( IngredientPicture element ) {
-            throw new NotImplementedException();
+        public void DeleteDependantElement( IngredientPicture element ) {
+            _dbContext.Remove( element );
+            _dbContext.SaveChanges();
         }
     }
 }

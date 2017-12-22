@@ -1,38 +1,189 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using ThirtyThreeWhales.SmallCafe.Models;
 using ThirtyThreeWhales.SmallCafe.Services.Interfaces;
 
-namespace ThirtyThreeWhales.SmallCafe.Controllers
-{
+namespace ThirtyThreeWhales.SmallCafe.Controllers {
     [Produces("application/json")]
     [Route("api")]
     public class RecipePicturesController : Controller
     {
-        private IDbService<RecipePicture> _dbService;
-        public RecipePicturesController( IDbService<RecipePicture> dbService ) {
+        private IDependentEntityDbService<RecipePicture> _dbService;
+        public RecipePicturesController(IDependentEntityDbService<RecipePicture> dbService ) {
             _dbService = dbService;
         }
 
+        [HttpGet]
+        [Route( "Recipes/{recipeID}/Pictures" )]
+        public JsonResult GetPicturesForRecipe(int recipeID ) {
+            List<string> errors = new List<string>();
 
-        public JsonResult GetPicturesForRecipe() {
-            return null;
+            if ( recipeID <= 0 ) {
+                errors.Add( "RecipeId is <= 0" );
+            }
+
+            if ( errors.Count > 0 ) {
+                return Json( new { errors = errors } );
+            }
+
+            IList<RecipePicture> recipePictures = new List<RecipePicture>();
+
+            try {
+                recipePictures = _dbService.GetAllElementsByParentElementId( recipeID );
+            } catch ( Exception e ) {
+                //TODO: logger
+                errors.Add( $"Exception: {e.Message}" );
+
+                if ( e.InnerException != null ) {
+                    errors.Add( $"Inner Exception: {e.InnerException.Message}" );
+                }
+            }
+
+            if ( errors.Count > 0 ) {
+                return Json( new { errors = errors } );
+            }
+
+            if ( recipePictures == null ) {
+                return Json( null );
+            }
+
+            return Json( recipePictures.Select( r => new {
+                RecipePictureID = r.RecipePictureID,
+                RecipeID = r.RecipeID,
+                Picture = Convert.ToBase64String( r.Picture )
+            } ).ToList() );
         }
 
         [HttpPost]
-        [Route( "Recipes/{rcpId}/Pictures" )]
-        public JsonResult AddPictureForIngredient( int rcpId, IFormFile picture ) {
+        [Route( "Recipes/{recipeID}/Pictures" )]
+        public JsonResult AddPictureForRecipe( int recipeID, IFormFile picture ) {
+            List<string> errors = new List<string>();
+
+            if ( recipeID <= 0 ) {
+                errors.Add( "RecipeId is <= 0" );
+            }
+
+            if ( picture == null ) {
+                errors.Add( "Picture is null" );
+            }
+
+            if ( errors.Count > 0 ) {
+                return Json( new { errors = errors } );
+            }
+
+            byte[ ] pictureBytes;
+            RecipePicture recipePicture = new RecipePicture();
+
             using ( MemoryStream stream = new MemoryStream() ) {
                 picture.CopyTo( stream );
-                var bytes = stream.ToArray();
-                _dbService.CreateNewElement( new RecipePicture() { RcpId = rcpId, Picture = bytes } );
+                pictureBytes = stream.ToArray();
             }
-            return null;
+
+            try {
+                recipePicture = _dbService.CreateNewDependantElement( new RecipePicture() { RecipeID = recipeID, Picture = pictureBytes } );
+            } catch ( Exception e ) {
+                //TODO: logger
+                errors.Add($"Exception: {e.Message}");
+
+                if ( e.InnerException != null ) {
+                    errors.Add( $"Inner Exception: {e.InnerException.Message}" );
+                }
+            }
+
+            if ( errors.Count > 0 ) {
+                return Json( new { errors = errors } );
+            }
+
+            return Json( new {
+                RecipePictureID = recipePicture.RecipePictureID,
+                RecipeID = recipePicture.RecipeID,
+                Picture = Convert.ToBase64String( recipePicture.Picture)
+            } );
+        }
+
+        [HttpPut]
+        [Route( "Recipes/{recipeID}/Pictures/{recipePictureID}" )]
+        public JsonResult UpdatePictureForRecipe( int recipeID, int recipePictureID, IFormFile picture ) {
+            List<string> errors = new List<string>();
+
+            if ( recipeID <= 0 ) {
+                errors.Add( "RecipeId is <= 0" );
+            }
+
+            if ( recipePictureID <= 0 ) {
+                errors.Add( "RecipePictureId is <= 0" );
+            }
+
+            if ( picture == null ) {
+                errors.Add( "Picture is null" );
+            }
+
+            if ( errors.Count > 0 ) {
+                return Json( new { errors = errors } );
+            }
+
+            byte[ ] pictureBytes;
+            RecipePicture recipePicture = new RecipePicture();
+
+            using ( MemoryStream stream = new MemoryStream() ) {
+                picture.CopyTo( stream );
+                pictureBytes = stream.ToArray();
+            }
+
+            try {
+                recipePicture = _dbService.UpdateExistingDependantElement( new RecipePicture() {
+                    RecipeID = recipeID,
+                    RecipePictureID = recipePictureID,
+                    Picture = pictureBytes
+                } );
+            } catch ( Exception e ) {
+                //TODO: logger
+                errors.Add( $"Exception: {e.Message}" );
+
+                if ( e.InnerException != null ) {
+                    errors.Add( $"Inner Exception: {e.InnerException.Message}" );
+                }
+            }
+
+            if ( errors.Count > 0 ) {
+                return Json( new { errors = errors } );
+            }
+
+            return Json( new {
+                RecipePictureID = recipePicture.RecipePictureID,
+                RecipeID = recipePicture.RecipeID,
+                Picture = Convert.ToBase64String( recipePicture.Picture )
+            } );
+        }
+
+        [HttpDelete]
+        [Route( "Recipes/{recipeID}/Pictures/{recipePictureID}" )]
+        public IActionResult DeletePictureForRecipe( int recipeID, int recipePictureID ) {
+            List<string> errors = new List<string>();
+
+            if ( recipeID <= 0 ) {
+                errors.Add( "RecipeID is <= 0" );
+            }
+
+            if ( recipePictureID <= 0 ) {
+                errors.Add( "RecipePictureID is <= 0" );
+            }
+
+            if ( errors.Count > 0 ) {
+                return Json( new { errors = errors } );
+            }
+
+            try {
+                _dbService.DeleteDependantElement(new RecipePicture(){ RecipeID = recipeID, RecipePictureID = recipePictureID } );
+            } catch ( Exception e ) {
+                //TODO: logger
+                return StatusCode( 500, $"Exception: {e.Message}" );
+            }
+            return Ok();
         }
     }
 }

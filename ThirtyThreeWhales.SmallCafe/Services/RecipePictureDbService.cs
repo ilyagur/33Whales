@@ -1,39 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using ThirtyThreeWhales.SmallCafe.Data;
 using ThirtyThreeWhales.SmallCafe.Models;
 using ThirtyThreeWhales.SmallCafe.Services.Interfaces;
 
-namespace ThirtyThreeWhales.SmallCafe.Services
-{
-    public class RecipePictureDbService : IDbService<RecipePicture> {
+namespace ThirtyThreeWhales.SmallCafe.Services {
+    public class RecipePictureDbService : IDependentEntityDbService<RecipePicture> {
         private CafeDbContext _dbContext;
 
         public RecipePictureDbService( CafeDbContext dbContext ) {
             _dbContext = dbContext;
         }
-        public RecipePicture CreateNewElement( RecipePicture element ) {
+
+        public IList<RecipePicture> GetSpecificElementsByParentElementId( int parentId, int elementId ) {
+            throw new System.NotImplementedException();
+        }
+        public RecipePicture CreateNewDependantElement( RecipePicture element ) {
             _dbContext.Add( element );
             _dbContext.SaveChanges();
             return element;
         }
 
-        public bool DeleteElement( int id ) {
-            throw new NotImplementedException();
+        public IList<RecipePicture> GetAllElementsByParentElementId( int id ) {
+            var recipe = _dbContext.Recipes
+                .Where( r => r.RecipeID == id )
+                .Select( a => new Recipe() {
+                                                Pictures = a.Pictures
+                                            } ).FirstOrDefault();
+
+            if ( recipe == null || recipe.Pictures == null ) {
+                return null;
+            }
+
+            return recipe.Pictures.ToList();
         }
 
-        public IList<RecipePicture> GetAll() {
-            throw new NotImplementedException();
+        public RecipePicture UpdateExistingDependantElement( RecipePicture element ) {
+            _dbContext.Update(element);
+            _dbContext.SaveChanges();
+
+            return element;
         }
 
-        public RecipePicture GetElementById( int id ) {
-            throw new NotImplementedException();
-        }
-
-        public RecipePicture UpdateElement( RecipePicture element ) {
-            throw new NotImplementedException();
+        public void DeleteDependantElement( RecipePicture element ) {
+            _dbContext.Remove( element );
+            _dbContext.SaveChanges();
         }
     }
 }

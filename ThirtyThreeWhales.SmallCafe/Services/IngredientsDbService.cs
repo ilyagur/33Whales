@@ -5,7 +5,7 @@ using ThirtyThreeWhales.SmallCafe.Models;
 using ThirtyThreeWhales.SmallCafe.Services.Interfaces;
 
 namespace ThirtyThreeWhales.SmallCafe.Data {
-    public class IngredientsDbService: IDbService<Ingredient>
+    public class IngredientsDbService: IIndependentEntityDbService<Ingredient>
     {
         private CafeDbContext _dbContext;
 
@@ -18,7 +18,7 @@ namespace ThirtyThreeWhales.SmallCafe.Data {
         }
 
         public Ingredient GetElementById( int id ) {
-            return _dbContext.Ingredients.FirstOrDefault(i => i.IngrId == id);
+            return _dbContext.Ingredients.FirstOrDefault(i => i.IngredientID == id);
         }
 
         public Ingredient CreateNewElement( Ingredient ingredient ) {
@@ -35,22 +35,9 @@ namespace ThirtyThreeWhales.SmallCafe.Data {
             return ingredient;
         }
 
-        public bool DeleteElement( int id ) {
-            try {
-                Ingredient ingredientToDelete = GetElementById( id );
-
-                if ( ingredientToDelete == null ) {
-                    return false;
-                }
-
-                _dbContext.Remove( ingredientToDelete );
-                _dbContext.SaveChanges();
-
-            } catch ( Exception ) {
-                return false;
-                //logger
-            }
-            return true;
+        public void DeleteElement( Ingredient ingredient ) {
+            _dbContext.Remove( ingredient );
+            _dbContext.SaveChanges();
         }
     }
 }

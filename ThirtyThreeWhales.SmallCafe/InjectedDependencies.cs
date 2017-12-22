@@ -7,9 +7,11 @@ using ThirtyThreeWhales.SmallCafe.Services.Interfaces;
 namespace ThirtyThreeWhales.SmallCafe {
     public static class InjectedDependencies {
         public static void AddDependencies( this IServiceCollection services ) {
-            services.AddScoped<IDbService<Ingredient>, IngredientsDbService>();
-            services.AddScoped<IDbService<IngredientPicture>, IngredientPicturesDbService>();
-            services.AddScoped<IDbService<RecipePicture>, RecipePictureDbService>();
+            services.AddScoped<IIndependentEntityDbService<Ingredient>, IngredientsDbService>();
+            services.AddScoped<IIndependentEntityDbService<Recipe>, RecipesDbService>();
+            services.AddScoped<IDependentEntityDbService<IngredientPicture>, IngredientPicturesDbService>();
+            services.AddScoped<IDependentEntityDbService<RecipePicture>, RecipePictureDbService>();
+            services.AddScoped<IDependentEntityDbService<CompositionOfRecipes>, CompositionOfRecipesDbService>();
         }
     }
 }

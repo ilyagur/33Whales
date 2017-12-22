@@ -11,6 +11,8 @@ namespace ThirtyThreeWhales.SmallCafe.Data {
         public DbSet<IngredientPicture> IngredientPictures { get; set; }
         public DbSet<Recipe> Recipes { get; set; }
         public DbSet<RecipePicture> RecipePictures { get; set; }
+        public DbSet<CompositionOfRecipes> CompositionOfRecipes { get; set; }
+
 
         protected override void OnModelCreating( ModelBuilder modelBuilder ) {
             modelBuilder.Entity<Ingredient>().ToTable( "Ingredients" );
@@ -19,6 +21,7 @@ namespace ThirtyThreeWhales.SmallCafe.Data {
             modelBuilder.Entity<Recipe>().ToTable( "Recipes" );
             modelBuilder.Entity<RecipePicture>().ToTable( "RecipePictures" );
 
+            modelBuilder.Entity<CompositionOfRecipes>().ToTable( "CompositionOfRecipes" ).HasKey(k => new { k.IngredientID, k.RecipeID } );
         }
     }
 }
