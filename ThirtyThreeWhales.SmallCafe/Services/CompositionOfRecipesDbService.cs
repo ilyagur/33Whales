@@ -1,56 +1,39 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using ThirtyThreeWhales.SmallCafe.Data;
 using ThirtyThreeWhales.SmallCafe.Models;
 using ThirtyThreeWhales.SmallCafe.Services.Interfaces;
 
-namespace ThirtyThreeWhales.SmallCafe.Services
-{
-    public class CompositionOfRecipesDbService : IDependentEntityDbService<CompositionOfRecipes> {
-
-        private CafeDbContext _dbContext;
-        public CompositionOfRecipesDbService( CafeDbContext dbContext ) {
-            _dbContext = dbContext;
-        }
-        public CompositionOfRecipes CreateNewDependantElement( CompositionOfRecipes element ) {
-            _dbContext.Add( element );
-            _dbContext.SaveChanges();
-            return element;
+namespace ThirtyThreeWhales.SmallCafe.Services {
+    public class CompositionOfRecipesDbService : BaseDbService<CompositionOfRecipes>, IDependentEntityDbService<CompositionOfRecipes> {
+        public CompositionOfRecipesDbService( CafeDbContext dbContext, ILogger<CompositionOfRecipesDbService> logger ) : base(dbContext, logger) {
         }
 
-        public void DeleteDependantElement( CompositionOfRecipes element ) {
-            _dbContext.Remove( element );
-            _dbContext.SaveChanges();
-        }
+        public IList<CompositionOfRecipes> ReadAllElementsByParentElementId( int id ) {
 
-        public IList<CompositionOfRecipes> GetAllElementsByParentElementId( int id ) {
-            List<CompositionOfRecipes> compositionOfRecipes = _dbContext.CompositionOfRecipes
+            IQueryable<CompositionOfRecipes> cor;
+
+            try {
+                cor = _dbContext.CompositionOfRecipes
                 .Where( cr => cr.RecipeID == id )
-                .Select(cor => new CompositionOfRecipes() {
-                    RecipeID = cor.RecipeID,
-                    IngredientID = cor.IngredientID,
-                    Quantity = cor.Quantity,
-                    Ingredients = cor.Ingredients
-                } ).ToList();
-
-            if ( compositionOfRecipes == null ) {
+                .Select( recipes => new CompositionOfRecipes() {
+                    RecipeID = recipes.RecipeID,
+                    IngredientID = recipes.IngredientID,
+                    Quantity = recipes.Quantity,
+                    Ingredients = recipes.Ingredients
+                } );
+            } catch ( Exception e ) {
+                _logger.LogWarning( "Exception in ReadAllElementsByParentElementId method for IngredientPictures", e );
                 return null;
             }
 
-            return compositionOfRecipes.ToList();
-        }
+            if ( cor == null ) {
+                return null;
+            }
 
-        public IList<CompositionOfRecipes> GetSpecificElementsByParentElementId( int parentId, int elementId ) {
-            throw new NotImplementedException();
-        }
-
-        public CompositionOfRecipes UpdateExistingDependantElement( CompositionOfRecipes element ) {
-            _dbContext.Update( element );
-            _dbContext.SaveChanges();
-
-            return element;
+            return cor.ToList();
         }
     }
 }

@@ -3,10 +3,10 @@
 namespace ThirtyThreeWhales.SmallCafe.Services.Interfaces {
     public interface IIndependentEntityDbService<T>
     {
-        IList<T> GetAll();
-        T GetElementById( int id );
-        T CreateNewElement( T element );
+        T CreateElement( T element );
+        IList<T> ReadAllElements();
+        T ReadElementById( int id );
         T UpdateElement(T element);
-        void DeleteElement( T element );
+        bool DeleteElement( T element );
     }
 }

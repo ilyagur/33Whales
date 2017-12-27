@@ -1,50 +1,32 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using ThirtyThreeWhales.SmallCafe.Data;
 using ThirtyThreeWhales.SmallCafe.Models;
 using ThirtyThreeWhales.SmallCafe.Services.Interfaces;
 
 namespace ThirtyThreeWhales.SmallCafe.Services {
-    public class RecipePictureDbService : IDependentEntityDbService<RecipePicture> {
-        private CafeDbContext _dbContext;
+    public class RecipePictureDbService : BaseDbService<RecipePicture>, IDependentEntityDbService<RecipePicture> {
 
-        public RecipePictureDbService( CafeDbContext dbContext ) {
-            _dbContext = dbContext;
-        }
+        public RecipePictureDbService( CafeDbContext dbContext, ILogger<RecipePictureDbService> logger ) : base( dbContext, logger ) {}
 
-        public IList<RecipePicture> GetSpecificElementsByParentElementId( int parentId, int elementId ) {
-            throw new System.NotImplementedException();
-        }
-        public RecipePicture CreateNewDependantElement( RecipePicture element ) {
-            _dbContext.Add( element );
-            _dbContext.SaveChanges();
-            return element;
-        }
+        public IList<RecipePicture> ReadAllElementsByParentElementId( int id ) {
 
-        public IList<RecipePicture> GetAllElementsByParentElementId( int id ) {
-            var recipe = _dbContext.Recipes
-                .Where( r => r.RecipeID == id )
-                .Select( a => new Recipe() {
-                                                Pictures = a.Pictures
-                                            } ).FirstOrDefault();
+            IQueryable<RecipePicture> pictures;
 
-            if ( recipe == null || recipe.Pictures == null ) {
+            try {
+                pictures = _dbContext.RecipePictures.Where( p => p.RecipeID == id );
+            } catch ( Exception e ) {
+                _logger.LogWarning( "Exception in ReadAllElementsByParentElementId method for RecipePicture", e );
                 return null;
             }
 
-            return recipe.Pictures.ToList();
-        }
+            if ( pictures == null ) {
+                return null;
+            }
 
-        public RecipePicture UpdateExistingDependantElement( RecipePicture element ) {
-            _dbContext.Update(element);
-            _dbContext.SaveChanges();
-
-            return element;
-        }
-
-        public void DeleteDependantElement( RecipePicture element ) {
-            _dbContext.Remove( element );
-            _dbContext.SaveChanges();
+            return pictures.ToList();
         }
     }
 }

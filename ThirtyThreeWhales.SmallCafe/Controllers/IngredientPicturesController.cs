@@ -21,39 +21,21 @@ namespace ThirtyThreeWhales.SmallCafe.Controllers {
 
         [HttpGet]
         [Route( "Ingredients/{ingredientID}/Pictures" )]
-        public JsonResult GetPicturesForIngredient( int ingredientID ) {
-            List<string> errors = new List<string>();
+        public JsonResult ReadPicturesForIngredient( int ingredientID ) {
 
             if ( ingredientID <= 0 ) {
-                errors.Add( "IngredientID is <= 0" );
+                return Json( new { errors = "IngredientID is <= 0" } );
             }
 
-            if ( errors.Count > 0 ) {
-                return Json( new { errors = errors } );
-            }
-
-            IList<IngredientPicture> ingredientPicture = new List<IngredientPicture>();
-
-            try {
-                ingredientPicture = _dbService.GetAllElementsByParentElementId( ingredientID );
-            } catch ( Exception e ) {
-                string error = $"Exception: {e.Message}" + ( e.InnerException != null ? $" Inner Exception: {e.InnerException.Message}" : "" );
-                _logger.LogWarning( error );
-
-                errors.Add( error );
-            }
-
-            if ( errors.Count > 0 ) {
-                return Json( new { errors = errors } );
-            }
+            IList<IngredientPicture> ingredientPicture = _dbService.ReadAllElementsByParentElementId( ingredientID );
 
             if ( ingredientPicture == null ) {
                 return Json( null );
             }
 
             return Json( ingredientPicture.Select( r => new {
-                IngredientPictureID = r.IngredientPictureID,
-                IngredientID = r.IngredientID,
+                r.IngredientPictureID,
+                r.IngredientID,
                 Picture = Convert.ToBase64String( r.Picture )
             } ).ToList() );
         }
@@ -61,44 +43,29 @@ namespace ThirtyThreeWhales.SmallCafe.Controllers {
         [HttpPost]
         [Route( "Ingredients/{ingredientID}/Pictures" )]
         public JsonResult AddPictureForIngredient( int ingredientID, IFormFile picture ) {
-            List<string> errors = new List<string>();
-
             if ( ingredientID <= 0 ) {
-                errors.Add( "IngredientID is <= 0" );
+                return Json( new { errors = "Ingredient Id is <= 0" } );
             }
 
             if ( picture == null ) {
-                errors.Add( "Picture is null" );
-            }
-
-            if ( errors.Count > 0 ) {
-                return Json( new { errors = errors } );
+                return Json( new { errors = "Ingredient Id is null" } );
             }
 
             byte[ ] pictureBytes;
-            IngredientPicture ingredientPicture = new IngredientPicture();
-
             using ( MemoryStream stream = new MemoryStream() ) {
                 picture.CopyTo( stream );
                 pictureBytes = stream.ToArray();
             }
 
-            try {
-                ingredientPicture = _dbService.CreateNewDependantElement( new IngredientPicture() { IngredientID = ingredientID, Picture = pictureBytes } );
-            } catch ( Exception e ) {
-                string error = $"Exception: {e.Message}" + ( e.InnerException != null ? $" Inner Exception: {e.InnerException.Message}" : "" );
-                _logger.LogWarning( error );
+            IngredientPicture ingredientPicture = _dbService.CreateElement( new IngredientPicture() { IngredientID = ingredientID, Picture = pictureBytes } );
 
-                errors.Add( error );
-            }
-
-            if ( errors.Count > 0 ) {
-                return Json( new { errors = errors } );
+            if ( ingredientPicture == null ) {
+                return Json( null );
             }
 
             return Json( new {
-                IngredientID = ingredientPicture.IngredientID,
-                IngredientPictureID = ingredientPicture.IngredientPictureID,
+                ingredientPicture.IngredientID,
+                ingredientPicture.IngredientPictureID,
                 Picture = Convert.ToBase64String( ingredientPicture.Picture )
             } );
         }
@@ -106,52 +73,38 @@ namespace ThirtyThreeWhales.SmallCafe.Controllers {
         [HttpPut]
         [Route( "Ingredients/{ingredientID}/Pictures/{ingredientPictureID}" )]
         public JsonResult UpdatePictureForIngredient( int ingredientID, int ingredientPictureID, IFormFile picture ) {
-            List<string> errors = new List<string>();
 
             if ( ingredientID <= 0 ) {
-                errors.Add( "IngredientID is <= 0" );
+                return Json( new { errors = "IngredientID is <= 0" } );
             }
 
             if ( ingredientPictureID <= 0 ) {
-                errors.Add( "IngredientPictureID is <= 0" );
+                return Json( new { errors = "IngredientPictureID is <= 0" } );
             }
 
             if ( picture == null ) {
-                errors.Add( "Picture is null" );
-            }
-
-            if ( errors.Count > 0 ) {
-                return Json( new { errors = errors } );
+                return Json( new { errors = "Picture is null" } );
             }
 
             byte[ ] pictureBytes;
-            IngredientPicture ingredientPicture = new IngredientPicture();
-
             using ( MemoryStream stream = new MemoryStream() ) {
                 picture.CopyTo( stream );
                 pictureBytes = stream.ToArray();
             }
 
-            try {
-                ingredientPicture = _dbService.UpdateExistingDependantElement( new IngredientPicture() {
-                    IngredientID = ingredientID,
-                    IngredientPictureID = ingredientPictureID,
-                    Picture = pictureBytes
-                } );
-            } catch ( Exception e ) {
-                string error = $"Exception: {e.Message}" + ( e.InnerException != null ? $" Inner Exception: {e.InnerException.Message}" : "" );
-                _logger.LogWarning( error );
+            IngredientPicture ingredientPicture = _dbService.UpdateElement( new IngredientPicture() {
+                IngredientID = ingredientID,
+                IngredientPictureID = ingredientPictureID,
+                Picture = pictureBytes
+            } );
 
-                errors.Add( error );
-            }
-
-            if ( errors.Count > 0 ) {
-                return Json( new { errors = errors } );
+            if ( ingredientPicture == null ) {
+                return Json( null );
             }
 
             return Json( new {
-                IngredientID = ingredientPicture.IngredientID,
-                IngredientPictureID = ingredientPicture.IngredientPictureID,
+                ingredientPicture.IngredientID,
+                ingredientPicture.IngredientPictureID,
                 Picture = Convert.ToBase64String( ingredientPicture.Picture )
             } );
         }
@@ -162,26 +115,18 @@ namespace ThirtyThreeWhales.SmallCafe.Controllers {
             List<string> errors = new List<string>();
 
             if ( ingredientID <= 0 ) {
-                errors.Add( "IngredientID is <= 0" );
+                return Json( new { errors = "IngredientID is <= 0" } );
             }
 
             if ( ingredientPictureID <= 0 ) {
-                errors.Add( "IngredientPictureID is <= 0" );
+                return Json( new { errors = "IngredientPictureID is <= 0" } );
             }
 
-            if ( errors.Count > 0 ) {
-                return Json( new { errors = errors } );
+            if ( _dbService.DeleteElement( new IngredientPicture() { IngredientID = ingredientID, IngredientPictureID = ingredientPictureID } ) ) {
+                return Ok();
             }
 
-            try {
-                _dbService.DeleteDependantElement( new IngredientPicture() { IngredientID = ingredientID, IngredientPictureID = ingredientPictureID } );
-            } catch ( Exception e ) {
-                string error = $"Exception: {e.Message}" + ( e.InnerException != null ? $" Inner Exception: {e.InnerException.Message}" : "" );
-                _logger.LogWarning( error );
-
-                return StatusCode( 500, error );
-            }
-            return Ok();
+            return StatusCode( 500, "Error while deleting picture for ingredient" );
         }
     }
 }

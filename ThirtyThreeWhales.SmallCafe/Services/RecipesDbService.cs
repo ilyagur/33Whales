@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ThirtyThreeWhales.SmallCafe.Data;
@@ -6,39 +7,34 @@ using ThirtyThreeWhales.SmallCafe.Models;
 using ThirtyThreeWhales.SmallCafe.Services.Interfaces;
 
 namespace ThirtyThreeWhales.SmallCafe.Services {
-    public class RecipesDbService : IIndependentEntityDbService<Recipe> {
+    public class RecipesDbService : BaseDbService<Recipe>, IIndependentEntityDbService<Recipe> {
+        public RecipesDbService( CafeDbContext dbContext, ILogger<RecipesDbService> logger ) : base( dbContext, logger ) { }
 
-        private CafeDbContext _dbContext;
+        public IList<Recipe> ReadAllElements() {
 
-        public RecipesDbService( CafeDbContext dbContext ) {
-            _dbContext = dbContext;
+            IList<Recipe> recipes = new List<Recipe>();
+
+            try {
+                recipes = _dbContext.Recipes.ToList();
+            } catch ( Exception e ) {
+                _logger.LogWarning( "Exception", e );
+                return null;
+            }
+
+            return recipes;
         }
 
-        public Recipe CreateNewElement( Recipe element ) {
-            _dbContext.Add(element);
-            _dbContext.SaveChanges();
+        public Recipe ReadElementById( int id ) {
 
-            return element;
-        }
+            Recipe recipe = new Recipe();
+            try {
+                recipe = _dbContext.Recipes.FirstOrDefault( r => r.RecipeID == id );
+            } catch ( Exception e ) {
+                _logger.LogWarning( "Exception", e );
+                return null;
+            }
 
-        public void DeleteElement( Recipe element ) {
-            _dbContext.Remove( element );
-            _dbContext.SaveChanges();
-        }
-
-        public IList<Recipe> GetAll() {
-            return _dbContext.Recipes.ToList();
-        }
-
-        public Recipe GetElementById( int id ) {
-            return _dbContext.Recipes.FirstOrDefault( r => r.RecipeID == id );
-        }
-
-        public Recipe UpdateElement( Recipe element ) {
-            _dbContext.Update(element);
-            _dbContext.SaveChanges();
-
-            return element;
+            return recipe;
         }
     }
 }

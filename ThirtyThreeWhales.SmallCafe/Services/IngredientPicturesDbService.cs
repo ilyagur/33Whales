@@ -1,54 +1,32 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using ThirtyThreeWhales.SmallCafe.Data;
 using ThirtyThreeWhales.SmallCafe.Models;
 using ThirtyThreeWhales.SmallCafe.Services.Interfaces;
 
-namespace ThirtyThreeWhales.SmallCafe.Services
-{
-    public class IngredientPicturesDbService : IDependentEntityDbService<IngredientPicture> {
+namespace ThirtyThreeWhales.SmallCafe.Services {
+    public class IngredientPicturesDbService : BaseDbService<IngredientPicture>, IDependentEntityDbService<IngredientPicture> {
 
-        private CafeDbContext _dbContext;
+        public IngredientPicturesDbService( CafeDbContext dbContext, ILogger<IngredientPicturesDbService> logger ) : base( dbContext, logger ) {}
 
-        public IngredientPicturesDbService( CafeDbContext dbContext ) {
-            _dbContext = dbContext;
-        }
+        public IList<IngredientPicture> ReadAllElementsByParentElementId( int id ) {
 
-        public IList<IngredientPicture> GetSpecificElementsByParentElementId( int parentId, int elementId ) {
-            throw new System.NotImplementedException();
-        }
-        public IngredientPicture CreateNewDependantElement( IngredientPicture element ) {
-            _dbContext.Add( element );
-            _dbContext.SaveChanges();
-            return element;
-        }
+            IQueryable<IngredientPicture> pictures;
 
-        public IList<IngredientPicture> GetAllElementsByParentElementId( int id ) {
-            Ingredient ingredient = _dbContext.Ingredients
-                .Where( i => i.IngredientID == id )
-                .Select( a => new Ingredient() {
-                    Pictures = a.Pictures
-                } ).FirstOrDefault();
-
-            if ( ingredient == null || ingredient.Pictures == null ) {
+            try {
+                pictures = _dbContext.IngredientPictures.Where( p => p.IngredientID == id );
+            } catch ( Exception e ) {
+                _logger.LogWarning( "Exception in ReadAllElementsByParentElementId method for IngredientPictures", e );
                 return null;
             }
 
-            return ingredient.Pictures.ToList();
-        }
+            if ( pictures == null ) {
+                return null;
+            }
 
-        public IngredientPicture UpdateExistingDependantElement( IngredientPicture element ) {
-            _dbContext.Update( element );
-            _dbContext.SaveChanges();
-
-            return element;
-        }
-
-        public void DeleteDependantElement( IngredientPicture element ) {
-            _dbContext.Remove( element );
-            _dbContext.SaveChanges();
+            return pictures.ToList();
         }
     }
 }
