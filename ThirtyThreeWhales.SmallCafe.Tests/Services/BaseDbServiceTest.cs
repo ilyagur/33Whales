@@ -8,7 +8,7 @@ using ThirtyThreeWhales.SmallCafe.Services;
 using Xunit;
 
 
-namespace ThirtyThreeWhales.SmallCafe.Tests {
+namespace ThirtyThreeWhales.SmallCafe.Tests.Services {
     public class BaseDbServiceTest {
         [Fact]
         public void CreateElement_Valid() {

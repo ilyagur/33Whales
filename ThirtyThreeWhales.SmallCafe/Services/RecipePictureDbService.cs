@@ -13,6 +13,10 @@ namespace ThirtyThreeWhales.SmallCafe.Services {
 
         public IList<RecipePicture> ReadAllElementsByParentElementId( int id ) {
 
+            if ( id <= 0 ) {
+                return null;
+            }
+
             IQueryable<RecipePicture> pictures;
 
             try {

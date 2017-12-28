@@ -26,6 +26,10 @@ namespace ThirtyThreeWhales.SmallCafe.Data {
 
         public Ingredient ReadElementById( int id ) {
 
+            if ( id <= 0 ) {
+                return null;
+            }
+
             Ingredient ingredient = new Ingredient();
             try {
                 ingredient = _dbContext.Ingredients.FirstOrDefault( r => r.IngredientID == id );
