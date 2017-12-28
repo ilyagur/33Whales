@@ -151,6 +151,9 @@
     <Compile Include="Services\CompositionOfRecipesDbServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IngredientPicturesDbServiceTests.cs" />
+    <Compile Include="Services\IngredientsDbServiceTests.cs" />
+    <Compile Include="Services\RecipePictureDbServiceTests.cs" />
+    <Compile Include="Services\RecipesDbServiceTests.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
