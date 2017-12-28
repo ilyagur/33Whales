@@ -4,14 +4,15 @@ using System.Data.Entity.ModelConfiguration;
 
 namespace ThirtyThreeWhales.SmallCafe.Data {
     public class CafeDbContext: Microsoft.EntityFrameworkCore.DbContext {
+        public CafeDbContext() { }
         public CafeDbContext( DbContextOptions<CafeDbContext> options ) : base( options ) {
         }
 
-        public DbSet<Ingredient> Ingredients { get; set; }
-        public DbSet<IngredientPicture> IngredientPictures { get; set; }
-        public DbSet<Recipe> Recipes { get; set; }
-        public DbSet<RecipePicture> RecipePictures { get; set; }
-        public DbSet<CompositionOfRecipes> CompositionOfRecipes { get; set; }
+        public virtual DbSet<Ingredient> Ingredients { get; set; }
+        public virtual DbSet<IngredientPicture> IngredientPictures { get; set; }
+        public virtual DbSet<Recipe> Recipes { get; set; }
+        public virtual DbSet<RecipePicture> RecipePictures { get; set; }
+        public virtual DbSet<CompositionOfRecipes> CompositionOfRecipes { get; set; }
 
 
         protected override void OnModelCreating( ModelBuilder modelBuilder ) {
