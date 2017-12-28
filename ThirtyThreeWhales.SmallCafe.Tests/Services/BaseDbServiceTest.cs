@@ -13,7 +13,7 @@ namespace ThirtyThreeWhales.SmallCafe.Tests.Services {
         [Fact]
         public void CreateElement_Valid() {
 
-            var dbContext = new Mock<CafeDbContext>();
+            var dbContext = new Mock<IDbContext>();
             var logger = new Mock<ILogger<BaseDbService<Recipe>>>();
 
             BaseDbService<Recipe> recipe = new BaseDbService<Recipe>( dbContext.Object, logger.Object );
@@ -29,7 +29,7 @@ namespace ThirtyThreeWhales.SmallCafe.Tests.Services {
         [Fact]
         public void CreateElement_Add_Throw_Exception() {
 
-            var dbContext = new Mock<CafeDbContext>();
+            var dbContext = new Mock<IDbContext>();
             dbContext.Setup( d => d.Add( It.IsAny<Recipe>() ) ).Throws(new Exception());
 
             var logger = new Mock<ILogger<BaseDbService<Recipe>>>();
@@ -47,7 +47,7 @@ namespace ThirtyThreeWhales.SmallCafe.Tests.Services {
         [Fact]
         public void CreateElement_SaveChanges_Throw_Exception() {
 
-            var dbContext = new Mock<CafeDbContext>();
+            var dbContext = new Mock<IDbContext>();
             dbContext.Setup( d => d.SaveChanges() ).Throws( new Exception() );
 
             var logger = new Mock<ILogger<BaseDbService<Recipe>>>();
@@ -65,7 +65,7 @@ namespace ThirtyThreeWhales.SmallCafe.Tests.Services {
         [Fact]
         public void UpdateElement_Valid() {
 
-            var dbContext = new Mock<CafeDbContext>();
+            var dbContext = new Mock<IDbContext>();
             var logger = new Mock<ILogger<BaseDbService<Recipe>>>();
 
             BaseDbService<Recipe> recipe = new BaseDbService<Recipe>( dbContext.Object, logger.Object );
@@ -81,7 +81,7 @@ namespace ThirtyThreeWhales.SmallCafe.Tests.Services {
         [Fact]
         public void UpdateElement_Add_Throw_Exception() {
 
-            var dbContext = new Mock<CafeDbContext>();
+            var dbContext = new Mock<IDbContext>();
             dbContext.Setup( d => d.Update( It.IsAny<Recipe>() ) ).Throws( new Exception() );
 
             var logger = new Mock<ILogger<BaseDbService<Recipe>>>();
@@ -99,7 +99,7 @@ namespace ThirtyThreeWhales.SmallCafe.Tests.Services {
         [Fact]
         public void UpdateElement_SaveChanges_Throw_Exception() {
 
-            var dbContext = new Mock<CafeDbContext>();
+            var dbContext = new Mock<IDbContext>();
             dbContext.Setup( d => d.SaveChanges() ).Throws( new Exception() );
 
             var logger = new Mock<ILogger<BaseDbService<Recipe>>>();
@@ -117,7 +117,7 @@ namespace ThirtyThreeWhales.SmallCafe.Tests.Services {
         [Fact]
         public void DeleteElement_Valid() {
 
-            var dbContext = new Mock<CafeDbContext>();
+            var dbContext = new Mock<IDbContext>();
             var logger = new Mock<ILogger<BaseDbService<Recipe>>>();
 
             BaseDbService<Recipe> recipe = new BaseDbService<Recipe>( dbContext.Object, logger.Object );
@@ -133,7 +133,7 @@ namespace ThirtyThreeWhales.SmallCafe.Tests.Services {
         [Fact]
         public void DeleteElement_Add_Throw_Exception() {
 
-            var dbContext = new Mock<CafeDbContext>();
+            var dbContext = new Mock<IDbContext>();
             dbContext.Setup( d => d.Remove( It.IsAny<Recipe>() ) ).Throws( new Exception() );
 
             var logger = new Mock<ILogger<BaseDbService<Recipe>>>();
@@ -151,7 +151,7 @@ namespace ThirtyThreeWhales.SmallCafe.Tests.Services {
         [Fact]
         public void DeleteElement_SaveChanges_Throw_Exception() {
 
-            var dbContext = new Mock<CafeDbContext>();
+            var dbContext = new Mock<IDbContext>();
             dbContext.Setup( d => d.SaveChanges() ).Throws( new Exception() );
 
             var logger = new Mock<ILogger<BaseDbService<Recipe>>>();

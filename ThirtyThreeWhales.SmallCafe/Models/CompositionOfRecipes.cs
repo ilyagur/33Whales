@@ -11,7 +11,7 @@ namespace ThirtyThreeWhales.SmallCafe.Models
         public int IngredientID { get; set; }
         public int RecipeID { get; set; }
         public decimal Quantity { get; set; }
-        public virtual Ingredient Ingredients { get; set; }
-        public virtual Recipe Recipes { get; set; }
+        public virtual Ingredient Ingredient { get; set; }
+        public virtual Recipe Recipe { get; set; }
     }
 }

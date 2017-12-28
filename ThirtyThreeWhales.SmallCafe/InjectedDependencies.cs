@@ -12,6 +12,7 @@ namespace ThirtyThreeWhales.SmallCafe {
             services.AddScoped<IDependentEntityDbService<IngredientPicture>, IngredientPicturesDbService>();
             services.AddScoped<IDependentEntityDbService<RecipePicture>, RecipePictureDbService>();
             services.AddScoped<IDependentEntityDbService<CompositionOfRecipes>, CompositionOfRecipesDbService>();
+            services.AddScoped<IDbContext, CafeDbContext>();
         }
     }
 }

@@ -11,15 +11,15 @@ using ThirtyThreeWhales.SmallCafe.Services;
 using Xunit;
 
 namespace ThirtyThreeWhales.SmallCafe.Tests.Services {
-    public class CompositionOfRecipesDbServiceTests {
+    public class IngredientPicturesDbServiceTests {
 
         [Fact]
         public void ReadAllElementsByParentElementId_Invalid_Input() {
 
             var dbContext = new Mock<IDbContext>();
-            var logger = new Mock<ILogger<CompositionOfRecipesDbService>>();
+            var logger = new Mock<ILogger<IngredientPicturesDbService>>();
 
-            var corDbService = new CompositionOfRecipesDbService( dbContext.Object, logger.Object );
+            var corDbService = new IngredientPicturesDbService( dbContext.Object, logger.Object );
 
             Assert.Null( corDbService.ReadAllElementsByParentElementId( 0 ) );
             Assert.Null( corDbService.ReadAllElementsByParentElementId( -1 ) );
@@ -29,9 +29,9 @@ namespace ThirtyThreeWhales.SmallCafe.Tests.Services {
         public void ReadAllElementsByParentElementId_Valid_Input_No_Such_Table() {
 
             var dbContext = new Mock<IDbContext>();
-            var logger = new Mock<ILogger<CompositionOfRecipesDbService>>();
+            var logger = new Mock<ILogger<IngredientPicturesDbService>>();
 
-            var corDbService = new CompositionOfRecipesDbService( dbContext.Object, logger.Object );
+            var corDbService = new IngredientPicturesDbService( dbContext.Object, logger.Object );
 
             var result = corDbService.ReadAllElementsByParentElementId( 1 );
             logger.Verify( l => l.Log( It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<FormattedLogValues>(), It.IsAny<Exception>(), It.IsAny<Func<object, Exception, string>>() ), Times.Once );
@@ -42,10 +42,10 @@ namespace ThirtyThreeWhales.SmallCafe.Tests.Services {
         public void ReadAllElementsByParentElementId_Valid_Input_No_Data_In_Table() {
 
             var dbContext = new Mock<IDbContext>();
-            dbContext.Setup( d => d.CompositionOfRecipes ).Returns<CompositionOfRecipes>( null );
-            var logger = new Mock<ILogger<CompositionOfRecipesDbService>>();
+            dbContext.Setup( d => d.IngredientPictures ).Returns<IngredientPicturesDbService>( null );
+            var logger = new Mock<ILogger<IngredientPicturesDbService>>();
 
-            var corDbService = new CompositionOfRecipesDbService( dbContext.Object, logger.Object );
+            var corDbService = new IngredientPicturesDbService( dbContext.Object, logger.Object );
 
             var result = corDbService.ReadAllElementsByParentElementId( 1 );
             logger.Verify( l => l.Log( It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<FormattedLogValues>(), It.IsAny<Exception>(), It.IsAny<Func<object, Exception, string>>() ), Times.Once );
@@ -54,32 +54,30 @@ namespace ThirtyThreeWhales.SmallCafe.Tests.Services {
 
         [Fact]
         public void ReadAllElementsByParentElementId_Valid_Data_In_Table() {
-            var corMock = Utils.CreateMockDbSet( new List<CompositionOfRecipes>
+            var picMock = Utils.CreateMockDbSet( new List<IngredientPicture>
                 {
-                    new CompositionOfRecipes(){
-                        RecipeID = 1,
+                    new IngredientPicture(){
                         IngredientID = 1,
                         Ingredient = new Ingredient(),
-                        Quantity = 1
+                        IngredientPictureID = 1
                     }
                 } );
 
 
             var dbContext = new Mock<IDbContext>();
-            dbContext.Setup( d => d.CompositionOfRecipes ).Returns( corMock.Object );
-            var logger = new Mock<ILogger<CompositionOfRecipesDbService>>();
-            var corDbService = new CompositionOfRecipesDbService( dbContext.Object, logger.Object );
+            dbContext.Setup( d => d.IngredientPictures ).Returns( picMock.Object );
+            var logger = new Mock<ILogger<IngredientPicturesDbService>>();
+            var picDbService = new IngredientPicturesDbService( dbContext.Object, logger.Object );
 
-            var results = corDbService.ReadAllElementsByParentElementId( 1 );
+            var results = picDbService.ReadAllElementsByParentElementId( 1 );
 
             logger.Verify( l => l.Log( It.IsAny<LogLevel>(), It.IsAny<EventId>(), It.IsAny<FormattedLogValues>(), It.IsAny<Exception>(), It.IsAny<Func<object, Exception, string>>() ), Times.Never );
             Assert.True( results.Count == 1 );
 
             var result = results.FirstOrDefault();
 
-            Assert.True( result.RecipeID == 1 );
             Assert.True( result.IngredientID == 1 );
-            Assert.True( result.Quantity == 1 );
+            Assert.True( result.IngredientPictureID == 1 );
             Assert.NotNull( result.Ingredient );
         }
     }

@@ -35,7 +35,7 @@ namespace ThirtyThreeWhales.SmallCafe.Controllers {
                 c.RecipeID,
                 c.IngredientID,
                 c.Quantity,
-                c.Ingredients
+                c.Ingredient
             } ).ToList() );
         }
 

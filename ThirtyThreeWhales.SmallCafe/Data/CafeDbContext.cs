@@ -3,7 +3,7 @@ using ThirtyThreeWhales.SmallCafe.Models;
 using System.Data.Entity.ModelConfiguration;
 
 namespace ThirtyThreeWhales.SmallCafe.Data {
-    public class CafeDbContext: Microsoft.EntityFrameworkCore.DbContext {
+    public class CafeDbContext: Microsoft.EntityFrameworkCore.DbContext, IDbContext {
         public CafeDbContext() { }
         public CafeDbContext( DbContextOptions<CafeDbContext> options ) : base( options ) {
         }

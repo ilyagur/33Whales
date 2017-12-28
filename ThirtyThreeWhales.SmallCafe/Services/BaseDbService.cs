@@ -4,9 +4,9 @@ using ThirtyThreeWhales.SmallCafe.Data;
 
 namespace ThirtyThreeWhales.SmallCafe.Services {
     public class BaseDbService<T> where T : class {
-        protected CafeDbContext _dbContext;
+        protected IDbContext _dbContext;
         protected ILogger<BaseDbService<T>> _logger;
-        public BaseDbService( CafeDbContext dbContext, ILogger<BaseDbService<T>> logger ) {
+        public BaseDbService( IDbContext dbContext, ILogger<BaseDbService<T>> logger ) {
             _dbContext = dbContext;
             _logger = logger;
         }

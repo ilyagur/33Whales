@@ -8,7 +8,7 @@ using ThirtyThreeWhales.SmallCafe.Services.Interfaces;
 
 namespace ThirtyThreeWhales.SmallCafe.Services {
     public class RecipesDbService : BaseDbService<Recipe>, IIndependentEntityDbService<Recipe> {
-        public RecipesDbService( CafeDbContext dbContext, ILogger<RecipesDbService> logger ) : base( dbContext, logger ) { }
+        public RecipesDbService( IDbContext dbContext, ILogger<RecipesDbService> logger ) : base( dbContext, logger ) { }
 
         public IList<Recipe> ReadAllElements() {
 

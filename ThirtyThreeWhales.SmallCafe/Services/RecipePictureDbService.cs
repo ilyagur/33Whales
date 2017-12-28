@@ -9,7 +9,7 @@ using ThirtyThreeWhales.SmallCafe.Services.Interfaces;
 namespace ThirtyThreeWhales.SmallCafe.Services {
     public class RecipePictureDbService : BaseDbService<RecipePicture>, IDependentEntityDbService<RecipePicture> {
 
-        public RecipePictureDbService( CafeDbContext dbContext, ILogger<RecipePictureDbService> logger ) : base( dbContext, logger ) {}
+        public RecipePictureDbService( IDbContext dbContext, ILogger<RecipePictureDbService> logger ) : base( dbContext, logger ) {}
 
         public IList<RecipePicture> ReadAllElementsByParentElementId( int id ) {
 
@@ -23,10 +23,6 @@ namespace ThirtyThreeWhales.SmallCafe.Services {
                 pictures = _dbContext.RecipePictures.Where( p => p.RecipeID == id );
             } catch ( Exception e ) {
                 _logger.LogWarning( "Exception in ReadAllElementsByParentElementId method for RecipePicture", e );
-                return null;
-            }
-
-            if ( pictures == null ) {
                 return null;
             }
 
