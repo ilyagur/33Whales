@@ -7,9 +7,18 @@ using ThirtyThreeWhales.SmallCafe.Services;
 using ThirtyThreeWhales.SmallCafe.Services.Interfaces;
 
 namespace ThirtyThreeWhales.SmallCafe.Data {
+    //
+    // Summary:
+    //     Provides CRUD operations for ingredients
     public class IngredientsDbService : BaseDbService<Ingredient>, IIndependentEntityDbService<Ingredient> {
         public IngredientsDbService( IDbContext dbContext, ILogger<IngredientsDbService> logger ) : base( dbContext, logger ) { }
 
+        //
+        // Summary:
+        //     Read all ingredients
+        //
+        // Returns:
+        //     List of ingredients
         public IList<Ingredient> ReadAllElements() {
 
             IList<Ingredient> ingredients = new List<Ingredient>();
@@ -24,6 +33,16 @@ namespace ThirtyThreeWhales.SmallCafe.Data {
             return ingredients;
         }
 
+        //
+        // Summary:
+        //     Read ingredient with corresponding id
+        //
+        // Parameters:
+        //   id:
+        //     Id of ingredient.
+        //
+        // Returns:
+        //     ingredient
         public Ingredient ReadElementById( int id ) {
 
             if ( id <= 0 ) {

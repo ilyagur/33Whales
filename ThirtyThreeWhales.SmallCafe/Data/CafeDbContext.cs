@@ -1,9 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ThirtyThreeWhales.SmallCafe.Models;
-using System.Data.Entity.ModelConfiguration;
 
 namespace ThirtyThreeWhales.SmallCafe.Data {
-    public class CafeDbContext: Microsoft.EntityFrameworkCore.DbContext, IDbContext {
+    public class CafeDbContext: DbContext, IDbContext {
         public CafeDbContext() { }
         public CafeDbContext( DbContextOptions<CafeDbContext> options ) : base( options ) {
         }

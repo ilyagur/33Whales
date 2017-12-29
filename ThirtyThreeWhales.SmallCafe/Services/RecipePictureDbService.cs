@@ -7,10 +7,23 @@ using ThirtyThreeWhales.SmallCafe.Models;
 using ThirtyThreeWhales.SmallCafe.Services.Interfaces;
 
 namespace ThirtyThreeWhales.SmallCafe.Services {
+    //
+    // Summary:
+    //     Provides CRUD operations for recipe pictures
     public class RecipePictureDbService : BaseDbService<RecipePicture>, IDependentEntityDbService<RecipePicture> {
 
         public RecipePictureDbService( IDbContext dbContext, ILogger<RecipePictureDbService> logger ) : base( dbContext, logger ) {}
 
+        //
+        // Summary:
+        //     Read all pictures for given recipe
+        //
+        // Parameters:
+        //   id:
+        //     Id of recipe.
+        //
+        // Returns:
+        //     List of pictures
         public IList<RecipePicture> ReadAllElementsByParentElementId( int id ) {
 
             if ( id <= 0 ) {

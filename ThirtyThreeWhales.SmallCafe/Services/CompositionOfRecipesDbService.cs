@@ -7,10 +7,23 @@ using ThirtyThreeWhales.SmallCafe.Models;
 using ThirtyThreeWhales.SmallCafe.Services.Interfaces;
 
 namespace ThirtyThreeWhales.SmallCafe.Services {
+    //
+    // Summary:
+    //     Provides CRUD operations for composition of recipes
     public class CompositionOfRecipesDbService : BaseDbService<CompositionOfRecipes>, IDependentEntityDbService<CompositionOfRecipes> {
         public CompositionOfRecipesDbService( IDbContext dbContext, ILogger<CompositionOfRecipesDbService> logger ) : base(dbContext, logger) {
         }
 
+        //
+        // Summary:
+        //     Read whole composition for given recipe
+        //
+        // Parameters:
+        //   id:
+        //     Id of recipe.
+        //
+        // Returns:
+        //     List of compositions
         public IList<CompositionOfRecipes> ReadAllElementsByParentElementId( int id ) {
 
             if ( id <= 0 ) {
