@@ -7,18 +7,19 @@ using ThirtyThreeWhales.SmallCafe.Models;
 using ThirtyThreeWhales.SmallCafe.Services.Interfaces;
 
 namespace ThirtyThreeWhales.SmallCafe.Services {
-    //
-    // Summary:
-    //     Provides CRUD operations for recipes
+   
+    /// <summary>
+    /// Provides CRUD operations for recipes
+    /// </summary>
     public class RecipesDbService : BaseDbService<Recipe>, IIndependentEntityDbService<Recipe> {
         public RecipesDbService( IDbContext dbContext, ILogger<RecipesDbService> logger ) : base( dbContext, logger ) { }
 
-        //
-        // Summary:
-        //     Read all recipes
-        //
-        // Returns:
-        //     List of recipes
+        /// <summary>
+        /// Read all recipes
+        /// </summary>
+        /// <returns>
+        /// List of recipes
+        /// </returns>
         public IList<Recipe> ReadAllElements() {
 
             IList<Recipe> recipes = new List<Recipe>();
@@ -33,16 +34,13 @@ namespace ThirtyThreeWhales.SmallCafe.Services {
             return recipes;
         }
 
-        //
-        // Summary:
-        //     Read recipe with corresponding id
-        //
-        // Parameters:
-        //   id:
-        //     Id of recipe.
-        //
-        // Returns:
-        //     recipe
+        /// <summary>
+        /// Read recipe with corresponding id
+        /// </summary>
+        /// <param name="id">Id of recipe</param>
+        /// <returns>
+        /// Recipe
+        /// </returns>
         public Recipe ReadElementById( int id ) {
 
             if ( id <= 0 ) {

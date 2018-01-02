@@ -3,10 +3,11 @@ using System;
 using ThirtyThreeWhales.SmallCafe.Data;
 
 namespace ThirtyThreeWhales.SmallCafe.Services {
-    //
-    // Summary:
-    //     Base class for all data base services. Provide common methods such as:
-    //     CreateElement, UpdateElement, DeleteElement
+
+    /// <summary>
+    /// Base class for all data base services. Provide common methods such as:
+    /// CreateElement, UpdateElement, DeleteElement
+    /// </summary>
     public class BaseDbService<T> where T : class {
         protected IDbContext _dbContext;
         protected ILogger<BaseDbService<T>> _logger;
@@ -15,16 +16,13 @@ namespace ThirtyThreeWhales.SmallCafe.Services {
             _logger = logger;
         }
 
-        //
-        // Summary:
-        //     Create a new entity to data base
-        //
-        // Parameters:
-        //   element:
-        //     The entity to add.
-        //
-        // Returns:
-        //     Newly created entity
+        /// <summary>
+        /// Create a new entity in data base
+        /// <summary>
+        /// <param name="element">The entity to add.</param>
+        /// <returns>
+        /// Newly created entity
+        /// </returns>
         public virtual T CreateElement( T element ) {
             try {
                 _dbContext.Add( element );
@@ -37,16 +35,13 @@ namespace ThirtyThreeWhales.SmallCafe.Services {
             return element;
         }
 
-        //
-        // Summary:
-        //     Updating existing entity in data base
-        //
-        // Parameters:
-        //   element:
-        //     The entity to update.
-        //
-        // Returns:
-        //     Newly updated entity
+        /// <summary>
+        /// Updating existing entity in data base
+        /// </summary>
+        /// <param name="element">The entity to update.</param>
+        /// <returns>
+        /// Newly updated entity
+        /// </returns>     
         public virtual T UpdateElement( T element ) {
             try {
                 _dbContext.Update( element );
@@ -59,16 +54,13 @@ namespace ThirtyThreeWhales.SmallCafe.Services {
             return element;
         }
 
-        //
-        // Summary:
-        //     Delete an entity from data base
-        //
-        // Parameters:
-        //   element:
-        //     The entity to delete.
-        //
-        // Returns:
-        //     bool value that indicates are there any mistakes occurred
+        /// <summary>
+        /// Delete an entity from data base
+        /// </summary>
+        /// <param name="element">The entity to delete</param>
+        /// <returns>
+        /// Bool value that indicates are there any mistakes occurred
+        /// </returns>     
         public virtual bool DeleteElement( T element ) {
             try {
                 _dbContext.Remove( element );
